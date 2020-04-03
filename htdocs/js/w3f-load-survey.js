@@ -369,7 +369,7 @@ angular.module('W3FSurveyLoader', [ 'GoogleSpreadsheets' ])
 
 			var loadResources = function() {
 				$rootScope.loading = "Loading Resources...";
-
+				$rootScope.resources = [];
 				var q = $q.defer();
 
 				// Populate resources 
