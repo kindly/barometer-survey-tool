@@ -22,7 +22,8 @@ angular.module('W3FSurveyLoader', [ 'GoogleSpreadsheets' ])
 		$rootScope.answerSheets = {
 			'Control': null,
 			'Answers': null,
-			'Notes': null
+			'Notes': null,
+			'Resources':null
 		};
 
 		// Get control and set rootScope.control and $rootScope.links.control values
@@ -358,6 +359,23 @@ angular.module('W3FSurveyLoader', [ 'GoogleSpreadsheets' ])
 
 					_.each($rootScope.sectionOrder, function(sectionid) {
 						$rootScope.countNotes(sectionid);
+					});
+
+					q.resolve();
+				}, q.reject);
+
+				return q.promise;
+			}
+
+			var loadResources = function() {
+				$rootScope.loading = "Loading Resources...";
+
+				var q = $q.defer();
+
+				// Populate resources 
+				return gs.getRows(answerKey, $rootScope.answerSheets.Resources).then(function(rows) {
+					_.each(rows, function(resource) {
+						$rootScope.resources[resource.id].push(resource);
 					});
 
 					q.resolve();
