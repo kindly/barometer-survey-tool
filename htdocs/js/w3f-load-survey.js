@@ -401,16 +401,18 @@ angular.module('W3FSurveyLoader', [ 'GoogleSpreadsheets' ])
 				loadControl().then(function() {
 					loadAnswers().then(function() {
 						loadNotes().then(function() {
-							if($rootScope.status.error) {
-								deferred.resolve($rootScope.status);
-							}
-							else {
-								deferred.resolve({
-									message: "Loaded",
-									success: true,
-									clear: 3000,
-								});
-							}
+							loadResources().then(function() {
+								if($rootScope.status.error) {
+									deferred.resolve($rootScope.status);
+								}
+								else {
+									deferred.resolve({
+										message: "Loaded",
+										success: true,
+										clear: 3000,
+									});
+								}
+							}, loadError("Invalid resources"));
 						}, loadError("Invalid notes"));
 					}, loadError("Invalid answers"));
 				}, loadError("Invalid control"));
