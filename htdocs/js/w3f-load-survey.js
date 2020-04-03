@@ -375,7 +375,7 @@ angular.module('W3FSurveyLoader', [ 'GoogleSpreadsheets' ])
 				// Populate resources 
 				return gs.getRows(answerKey, $rootScope.answerSheets.Resources).then(function(rows) {
 					_.each(rows, function(resource) {
-						$rootScope.resources[resource.id].push(resource);
+						$rootScope.resources[resource.id] = resource;
 					});
 
 					q.resolve();
