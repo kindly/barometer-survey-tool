@@ -29,7 +29,7 @@ Date.prototype.format = function () {
   return this.toDateString() + ", " + this.toLocaleTimeString();
 }
 
-angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader', 'ngCookies', 'ngRoute', 'ngSanitize'])
+angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader', 'ngCookies', 'ngRoute', 'ngSanitize','angAccordion'])
   // Setup route. There's only one route, and it's /<answerSheetKey>
   .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider.when('/:answerKey?/:masterKey?', {

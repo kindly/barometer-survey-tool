@@ -84,9 +84,13 @@
 
 		<div class="section-description" ng-bind-html="section.description | markdown"></div>
 
-		<div ng-repeat="question in section.questions">
-			<ng-include src="'tpl/question.html'"></ng-include>
-		</div>
+		<ang-accordion>
+			
+			<collapsible-item ng-repeat="question in section.questions" item-title="{{question.question}}" one-at-a-time="true">
+				<ng-include src="'tpl/question.html'"></ng-include>
+			</collapsible-item>
+		
+		</ang-accordion>
 
 		<nav class="paging">
 			<button class="previous-button" ng-if="$index > 0" ng-click="navigate(sectionOrder[$index-1])">&laquo; Previous: {{ sections[sectionOrder[$index-1]].section }}</button>
