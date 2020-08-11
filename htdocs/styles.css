@@ -855,6 +855,11 @@ label.radio-label {
 	width:20%;
 }
 
+.radio-list label.radio-label {
+	display:block;
+	width:100%;
+}
+
 .question .supporting {
 		clear: both;
 		border-top: 1px solid lightgrey;
@@ -879,17 +884,6 @@ div.Legal label, div.Systems label, div.Data label {
 	clear:both;
 }
 
-.supporting-supporting0 textarea {
-    width: 70%;
-    display: inline-block;
-    clear: none;
-    height:2.5em; 
-}
-
-.supporting-supporting0 div {
-    width:30%;
-    float:left;
-}
 
 .justification {
     width: 100%;
@@ -940,4 +934,13 @@ div.Legal label, div.Systems label, div.Data label {
 
 .edit-button {
 	display: block;
+}
+
+
+.question-group {
+	border-top:2px solid grey;
+}
+
+.question.question-sum {
+	background-color: #F4F4F4
 }

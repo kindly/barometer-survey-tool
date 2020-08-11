@@ -14,6 +14,10 @@
 		</label>
 	</div>
 
+	<p ng-if="question.helplink" class="helplink">
+		<a href="{{question.helplink}}" target="w3f-guidance">Further question guidance &rarr;</a>
+	</p>
+
 	<div ng-if="question.type == 'Description'" class="response">
 		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE')" field="'response'" />
 	</div>
@@ -34,7 +38,7 @@
 	</div>
 
 	<div ng-if="question.type == 'Radio'" class="reponse radio">
-		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE') == FALSE" field="'response'" />
+		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE')" field="'response'" />
 			<label for="{{question.questionid}}-{{ option.id }}" ng-repeat="option in question.option" class="radio-label">
 				<input type='radio' name="{{question.questionid}}" id="{{question.questionid}}-{{ option.id }}" value="{{ $index }}" ng-model="response.response" ng-disabled="readOnly || commentOnly">
 				{{ option.content }}
@@ -42,9 +46,7 @@
 	</div>
 	
 
-	<p ng-if="question.helplink" class="helplink">
-		<a href="{{question.helplink}}" target="w3f-guidance">Further question guidance &rarr;</a>
-	</p>
+
 
 	<div ng-if="supporting && !supporting.values || supporting.values.indexOf(response.response) > -1" ng-repeat="supporting in question.supporting" class="supporting supporting-{{ supporting.id }}">
 		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE')" field="$parent.supporting.id" />
