@@ -1102,9 +1102,9 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
 
             angular.forEach(questions, function (q) {
               var number = parseInt($scope.responses[q.questionid].response);
-
+              var multiplier = q.multiplier ? q.multiplier : 1;
               if (!isNaN(number)) {
-                sum += number;
+                sum += number * multiplier;
               }
 
               if (q.subquestions && q.subquestions.length) {
