@@ -54,7 +54,7 @@
 }
 
 .collapsible-item.open > .body {
-  max-height: 1000px;
+  max-height: 1500px;
   z-index: 1;
 }
 

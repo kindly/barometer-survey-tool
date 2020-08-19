@@ -816,16 +816,18 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b2e1ff', end
  */
 #helplink-content {
 	position: fixed;
-	margin: 0 100px;
-	bottom: 0;
-	height: 300px;
-	left: 0;
-	right: 0;
+	margin: 0px;
+	bottom: 0px;
+	height: 90%;
+	left: 100%;
+	margin-left:-50%;
+	width:50%;
 	display: none;
 	background: #fff;
 }
 #helplink-content.open {
 	display: block;
+	z-index:2;
 }
 	#helplink-content iframe {
 		width: 100%;
@@ -943,4 +945,12 @@ div.Legal label, div.Systems label, div.Data label {
 
 .question.question-sum {
 	background-color: #F4F4F4
+}
+
+.collapsible-item .question:first-of-type {
+	margin-top:0em;
+}
+
+.collapsible-item.open > .body {
+  overflow: scroll;
 }

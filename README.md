@@ -212,7 +212,3 @@ A survey may have a list of states it moves through. These are defined in the 'S
 
 When data has been gathered, the fetchData script in /gdoc-scripts/ can be run against any spreadsheet with a 'Data' tab. This will read the control sheet, look for answer sheets, and copy their contents into the 'Data' tab of the sheet it is run against.
 
-
-
-
-
