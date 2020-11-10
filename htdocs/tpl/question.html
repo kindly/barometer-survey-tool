@@ -5,6 +5,11 @@
 			<fancy-select ng-model="response.confidence" ng-options="val.toString() as val for val in [ '0%', '25%', '50%', '75%', '95%', '100%' ]" with-null="-" ng-disabled="readOnly || commentOnly" />
 		</label>
 	</div>
+
+	<div ng-if="question.type == 'Note'" class="response">
+		<div ng-bind-html="question.question | markdown"></div>
+
+	</div>
 	
 	<div ng-if="question.type == 'Option'" class="response">
 		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE')" field="'response'" />
@@ -27,7 +32,7 @@
 		{{ response.response }}
 	</div>
 
-	<div class="question-title">
+	<div class="question-title" ng-if="!(question.type == 'Note')">
 		<h3>
 			<span ng-if="!(config.hide_question_id == 'TRUE')">{{ question.questionid.split('.').reverse()[0]}}: </span> <em><label for="question-{{ question.questionid }}">{{ question.question }}</label></em>
 		</h3>
@@ -108,7 +113,7 @@
 
 	<div ng-if="question.hasprivatenotes == 'Yes'" class="private-notes">
 		<notes ng-if="!anonymous && !(config.hide_notes == 'TRUE')" field="'privateNotes'" />
-		<h4>Private notes: for reviewer / coordinator only.</h4>
+		<h4>{{ config.private_note ? config.private_note : "Private notes: for reviewer / coordinator only." }}</h4>
 
 		<textarea ng-model="response.privatenotes" ng-disabled="readOnly || commentOnly"></textarea>
 	</div>

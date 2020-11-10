@@ -954,3 +954,9 @@ div.Legal label, div.Systems label, div.Data label {
 .collapsible-item.open > .body {
   overflow: scroll;
 }
+
+.pilot .private-notes {
+    padding: 5px;
+    border: black solid;
+    background: lightgrey;
+}

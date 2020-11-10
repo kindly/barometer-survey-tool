@@ -84,7 +84,7 @@
 
 		<div class="section-description" ng-bind-html="section.description | markdown"></div>
 
-		<ang-accordion>
+		<ang-accordion close-icon-class="fa fa-chevron-right" open-icon-class="fa fa-chevron-down">
 			
 			<collapsible-item ng-repeat="question in section.questions" item-title="{{question.question}}" one-at-a-time="true">
 				<ng-include src="'tpl/question.html'"></ng-include>
