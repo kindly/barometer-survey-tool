@@ -960,3 +960,11 @@ div.Legal label, div.Systems label, div.Data label {
     border: black solid;
     background: lightgrey;
 }
+
+.divider p {
+    background-color: lightblue;
+    font-size: large;
+    margin-left: -30px;
+    width: 40%;
+    padding: 5px;
+}

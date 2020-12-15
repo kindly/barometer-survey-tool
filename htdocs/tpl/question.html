@@ -34,7 +34,7 @@
 
 	<div class="question-title" ng-if="!(question.type == 'Note')">
 		<h3>
-			<span ng-if="!(config.hide_question_id == 'TRUE')">{{ question.questionid.split('.').reverse()[0]}}: </span> <em><label for="question-{{ question.questionid }}">{{ question.question }}</label></em>
+			<span ng-if="!(config.hide_question_id == 'TRUE')">{{ question.questionid.split('.').reverse()[0]}}: </span> <label for="question-{{ question.questionid }}">{{ question.question }}</label>
 		</h3>
 	</div>
 

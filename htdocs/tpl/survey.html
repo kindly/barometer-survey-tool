@@ -86,9 +86,11 @@
 
 		<ang-accordion close-icon-class="fa fa-chevron-right" open-icon-class="fa fa-chevron-down">
 			
-			<collapsible-item ng-repeat="question in section.questions" item-title="{{question.question}}" one-at-a-time="true">
-				<ng-include src="'tpl/question.html'"></ng-include>
+			<collapsible-item ng-if="config.print_view == 'FALSE'" ng-repeat="question in section.questions" item-title="{{question.question}}" one-at-a-time="true">
+				<ng-include  src="'tpl/question.html'"></ng-include>
 			</collapsible-item>
+
+			<ng-include ng-if="config.print_view == 'TRUE'" src="'tpl/question-print.html'" ng-repeat="question in section.questions"></ng-include>
 		
 		</ang-accordion>
 
