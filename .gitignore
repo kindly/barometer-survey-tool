@@ -5,3 +5,6 @@ htdocs/survey-config.php
 .DS_Store
 vendor
 deploy.md
+static
+*.pyc
+__pycache__
