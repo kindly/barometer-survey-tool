@@ -17,9 +17,16 @@ credentials = Credentials.from_service_account_info(service_account_data, scopes
 gc = gspread.authorize(credentials)
 
 
-def sheets_data(spreadsheet, sheets, id_name="id"):
+def sheets_data(spreadsheet, sheets=None, id_name="id"):
 
     spreadsheet = gc.open_by_key(spreadsheet)
+
+    availiable_sheets = [sheet.title for sheet in spreadsheet.worksheets()]
+
+    if not sheets:
+        sheets = availiable_sheets
+    else:
+        sheets = list(set(sheets) & set(availiable_sheets))
 
     all_data = spreadsheet.values_batch_get(sheets)
 
@@ -83,10 +90,10 @@ def insert_row(spreadsheet, sheet, row, sheet_data=None, id_name="id"):
 
     else:
         params = {
-            'valueInputOption': "RAW",
+            "valueInputOption": "RAW",
         }
 
-        body = {'values': [[value for value in new_row.values()]]}
+        body = {"values": [[value for value in new_row.values()]]}
 
         return spreadsheet.values_append(sheet, params, body)
 
@@ -104,5 +111,4 @@ def delete_row(spreadsheet, sheet, id, sheet_data=None, id_name="id"):
 
     if delete_index:
         worksheet = spreadsheet.worksheet(sheet)
-        worksheet.delete_rows(delete_index+1)
-
+        worksheet.delete_rows(delete_index + 1)

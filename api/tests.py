@@ -1,5 +1,6 @@
 from django.test import TestCase
 import unittest
+
 unittest.TestLoader.sortTestMethodsUsing = None
 
 
@@ -99,7 +100,6 @@ class SpreadheetActions(TestCase):
             },
         )
 
-
     def test_003_update_existing_row(self):
         api.spreadsheet_actions.insert_row(
             self.spreadsheet_id,
@@ -138,13 +138,8 @@ class SpreadheetActions(TestCase):
             },
         )
 
-
     def test_004_delete_row(self):
-        api.spreadsheet_actions.delete_row(
-            self.spreadsheet_id,
-            "worksheet1",
-            "1"
-        )
+        api.spreadsheet_actions.delete_row(self.spreadsheet_id, "worksheet1", "1")
 
         self.assertEqual(
             api.spreadsheet_actions.sheets_data(self.spreadsheet_id, ["worksheet1"]),
@@ -155,14 +150,17 @@ class SpreadheetActions(TestCase):
                         {"id": "2", "heading_a": "value_a2", "heading_b": "value_b2"}
                     ],
                     "records_by_id": {
-                        "2": {"id": "2", "heading_a": "value_a2", "heading_b": "value_b2"}
-
+                        "2": {
+                            "id": "2",
+                            "heading_a": "value_a2",
+                            "heading_b": "value_b2",
+                        }
                     },
                     "data": [["2", "value_a2", "value_b2"]],
                     "count": 1,
                     "id_to_row_number": {"2": 0},
                 },
-            }
+            },
         )
 
 
@@ -187,3 +185,4 @@ class TestAPI(TestCase):
         cls.gc.del_spreadsheet(cls.spreadsheet_id)
 
     def test_001_get_sheets_values(self):
+        pass

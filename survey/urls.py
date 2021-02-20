@@ -24,6 +24,8 @@ survey_data_router.register(r'data', api.views.SurveyDataViewset, basename='surv
 
 router = DefaultRouter()
 router.register(r'survey', api.views.SurveyViewset, basename='survey')
+router.register(r'survey-data-type', api.views.SurveyDataTypeViewset)
+router.register(r'question-data', api.views.QuestionDataViewset)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -31,5 +33,6 @@ urlpatterns = [
     path("api/", include(router.urls)),
     path("api/survey/<int:survey>/", include(survey_data_router.urls)),
     path("", api.views.default),
-    re_path(".*", api.views.default),
+    path("<str:a>/", api.views.default),
+    path("<str:a>/<str:b>/", api.views.default),
 ]
