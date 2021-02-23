@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 
-SURVEY_DATA_PRIVATE_FIELDS = ["id", "survey", "type", "data"]
+SURVEY_DATA_PRIVATE_FIELDS = ["survey", "type", "data"]
 
 
 def validate_survey_data_type(value):
@@ -24,22 +24,8 @@ class Survey(models.Model):
     class Meta:
         db_table = "survey"
 
-    owner = models.ForeignKey(
-        "auth.User", related_name="survey", on_delete=models.PROTECT
-    )
-    control = models.JSONField()
-
     def __str__(self):
-        return (
-            "id: "
-            + str(self.id)
-            + "  owner: "
-            + str(self.owner)
-            + ", "
-            + ", ".join(
-                [key + ": " + str(value) for key, value in self.control.items()]
-            )
-        )
+        return "id: " + str(self.id)
 
 
 class SurveyLog(models.Model):

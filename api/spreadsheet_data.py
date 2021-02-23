@@ -19,7 +19,8 @@ def import_question_data(spreadsheet, overwrite=True):
     type_count = {}
     for type, value in spreadsheet_data.items():
         for item in value["records"]:
-            obj = QuestionData(type=type, data=item)
+            data = {key.lower().replace(" ", ""): value for key, value in item.items()}
+            obj = QuestionData(type=type, data=data)
             obj.save()
         type_count[type] = value["count"]
 
@@ -33,7 +34,7 @@ def import_survey_data(spreadsheet, user):
 
     survey_types = [item.type for item in SurveyDataType.objects.all()]
 
-    survey = Survey(owner=user, control={})
+    survey = Survey()
     survey.save()
 
     output = {}
@@ -44,10 +45,11 @@ def import_survey_data(spreadsheet, user):
             continue
 
         for item in value["records"]:
+            data = {key.lower().replace(" ", ""): value for key, value in item.items()}
             obj = SurveyData(
                 survey=survey,
                 type=SurveyDataType.objects.get(type=sheet_name),
-                data=item,
+                data=data,
             )
             type_count[sheet_name] = value["count"]
             obj.save()

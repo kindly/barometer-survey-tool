@@ -120,7 +120,9 @@ class SurveyPermission(permissions.BasePermission):
 @login_required(login_url="/accounts/login/")
 def default(request, a=None, b=None):
     with open("htdocs/index.html") as index:
-        return HttpResponse(index.read())
+        return HttpResponse(
+            index.read().replace("{{survey_user_email}}", request.user.email)
+        )
 
 
 class SurveyDataViewset(viewsets.ModelViewSet):
@@ -158,7 +160,7 @@ class SurveyDataViewset(viewsets.ModelViewSet):
         output = {}
         for type_object in SurveyDataType.objects.all():
             type_queryset = queryset.filter(type_id=type_object.id)
-            serializer = self.get_serializer(queryset, many=True)
+            serializer = self.get_serializer(type_queryset, many=True)
             type_output = {}
             type_output["headings"] = type_object.fields
             type_output["data"] = serializer.data
@@ -304,6 +306,6 @@ class QuestionDataViewset(viewsets.ModelViewSet):
             type = item["type"]
             type_queryset = queryset.filter(type=type)
             serializer = self.get_serializer(type_queryset, many=True)
-            output[type] = serializer.data
+            output[type] = {"data": serializer.data}
 
         return Response(output)

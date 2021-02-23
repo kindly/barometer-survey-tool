@@ -11,29 +11,12 @@ from django.contrib.auth.models import User
 
 
 class SurveySerializer(serializers.ModelSerializer):
-    owner = serializers.SlugRelatedField(
-        slug_field="email", queryset=User.objects.all()
-    )
-
     class Meta:
         model = Survey
         fields = "__all__"
 
-    def update(self, instance, validated_data):
-        for attr, value in validated_data.items():
-            if attr == "control":
-                old_control = instance.control
-                old_control.update(value)
-                new_control = {k: v for k, v in old_control.items() if v}
-                instance.control = new_control
-            else:
-                setattr(instance, attr, value)
-        instance.save()
-        return instance
-
     def to_representation(self, instance):
         output = super().to_representation(instance)
-        output.pop("owner")
         output["_url"] = self.context["view"].reverse_action(
             "detail", args=[instance.id]
         )
@@ -74,6 +57,7 @@ class SurveyDataSerializer(serializers.ModelSerializer):
         for key in instance.type.fields:
             new_data[key] = data.get(key, "")
 
+        output["_id"] = output.pop("id")
         output.update(new_data)
 
         output["_url"] = self.context["view"].reverse_action(
