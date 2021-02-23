@@ -4,6 +4,55 @@ import api.models
 from django.db import migrations, models
 import django.db.models.deletion
 
+trigger_sql = '''
+CREATE OR REPLACE FUNCTION public.{table_name}_log_trigger()
+ RETURNS trigger LANGUAGE plpgsql
+AS $function$
+BEGIN
+  IF TG_OP = 'DELETE' THEN
+    INSERT INTO {table_name}_log(parent_id, event_datetime, action, username, data) VALUES (OLD.id, now(), 'D', session_user, to_json(OLD));
+  ELSE
+    INSERT INTO {table_name}_log(parent_id, event_datetime, action, username, data) VALUES (NEW.id, now(), TG_OP::char , session_user, to_json(NEW));
+  END IF;
+  RETURN NULL;
+END;
+$function$;
+
+CREATE TRIGGER log_{table_name} AFTER INSERT OR UPDATE OR DELETE ON {table_name} FOR EACH ROW EXECUTE FUNCTION {table_name}_log_trigger();
+'''
+
+field_types_sql = '''
+insert into survey_data_type(type, fields) values 
+    ('Control', '["field", "value"]'),
+    ('Answers', '[
+            "questionid",
+            "response",
+            "confidence",
+            "justification",
+            "privatenotes",
+            "example0",
+            "example1",
+            "example2",
+            "example3",
+            "example4",
+            "supporting0",
+            "supporting1",
+            "supporting2",
+            "supporting3",
+            "supporting4",
+            "supporting5"
+            ]'),
+    ('Notes', '[
+            "date",
+            "party",
+            "questionid",
+            "field",
+            "note",
+            "edited",
+            "resolved"
+            ]'),
+    ('Resources','["id","url","title"]')
+'''
 
 class Migration(migrations.Migration):
 
@@ -159,4 +208,6 @@ class Migration(migrations.Migration):
                 on_delete=django.db.models.deletion.PROTECT, to="api.surveydatatype"
             ),
         ),
+        migrations.RunSQL(trigger_sql.format(table_name='survey_data')),
+        migrations.RunSQL(field_types_sql),
     ]
