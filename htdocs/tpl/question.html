@@ -39,7 +39,7 @@
 	</div>
 
 	<div ng-if="question.subquestionsfirst =='Yes'">
-		<ng-include src="'tpl/question.html'" ng-repeat="question in question.subquestions"></ng-include>
+		<ng-include src="'static/tpl/question.html'" ng-repeat="question in question.subquestions"></ng-include>
 	</div>
 
 	<div ng-if="question.type == 'Radio'" class="reponse radio">
@@ -119,6 +119,6 @@
 	</div>
 
 	<div ng-if="!(question.subquestionsfirst =='Yes')">
-		<ng-include src="'tpl/question.html'" ng-repeat="question in question.subquestions"></ng-include>
+		<ng-include src="'static/tpl/question.html'" ng-repeat="question in question.subquestions"></ng-include>
 	</div>
 </div>

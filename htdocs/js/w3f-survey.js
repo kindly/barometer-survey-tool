@@ -34,7 +34,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   .config(['$routeProvider', '$locationProvider', function ($routeProvider, $locationProvider) {
     $routeProvider.when('/:answerKey?/:masterKey?', {
       controller: 'W3FSurveyController',
-      templateUrl: 'tpl/survey.html'
+      templateUrl: 'static/tpl/survey.html'
     });
 
     $locationProvider.html5Mode(true);
@@ -73,6 +73,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
 
   // Top-level controller
   .controller('W3FSurveyController', ['loader', 'spreadsheets', '$scope', '$rootScope', '$q', '$cookies', '$routeParams', '$interval', '$http', function (loader, gs, $scope, $rootScope, $q, $cookies, $routeParams, $interval, $http) {
+
     var answerKey = $routeParams.answerKey, queue;
 
     if ($routeParams.masterKey == 'clear') {
@@ -265,7 +266,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
         promise;
 
       if ($rootScope.links.control['Last Access']) {
-        promise = gs.updateRow($rootScope.links.control['Last Access'].edit, record);
+        promise = gs.updateRow($rootScope.links.control['Last Access'], record);
       }
       else {
         promise = gs.insertRow($rootScope.answerSheets.Control, record);
@@ -355,6 +356,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
 
     // Load the survey once we're ready.
     $rootScope.$on('load-survey', function () {
+      console.log('load')
       loader.load(answerKey).then(function (status) {
         // Check the exclusivity lock
         var lastAccess = $rootScope.control['Last Access'],
@@ -961,7 +963,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   // Attach notes to a question. Evaluate argument then evaluate against $scope
   .directive('notes', ['$rootScope', function ($rootScope) {
     return {
-      templateUrl: 'tpl/notes.html',
+      templateUrl: 'static/tpl/notes.html',
       restrict: 'E',
       scope: {},
 
@@ -1135,7 +1137,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   .directive('resourceManager', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     return {
       restrict: 'E',
-      templateUrl: 'tpl/resource-manager.html',
+      templateUrl: 'static/tpl/resource-manager.html',
       scope: {},
       link: function ($scope, element, attrs) {
 
@@ -1168,7 +1170,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   // A field for specifying a URL or a uploaded file
   .directive('uploadableUrl', ['$rootScope', '$http', '$q', function ($rootScope, $http, $q) {
     return {
-      templateUrl: 'tpl/uploadable-url.html',
+      templateUrl: 'static/tpl/uploadable-url.html',
       restrict: 'E',
       replace: true,
       scope: {
@@ -1375,7 +1377,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   // Allow for insert/update/delete operations on a list of text inputs
   .directive('flexibleList', ['$rootScope', function ($rootScope) {
     return {
-      templateUrl: 'tpl/flexible-list.html',
+      templateUrl: 'static/tpl/flexible-list.html',
       restrict: 'E',
       scope: {},
 
@@ -1482,7 +1484,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   .directive('fancySelect', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     return {
       restrict: 'E',
-      templateUrl: 'tpl/fancy-dropdown.html',
+      templateUrl: 'static/tpl/fancy-dropdown.html',
       replace: true,
       compile: function (element, attrs) {
         var $select = element.find('select');
@@ -1583,7 +1585,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
   .directive('modal', ['$rootScope', '$timeout', function ($rootScope, $timeout) {
     return {
       restrict: 'E',
-      templateUrl: 'tpl/modal.html',
+      templateUrl: 'static/tpl/modal.html',
       transclude: true,
       replace: true,
       scope: true,
@@ -1648,35 +1650,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
     });
 
     window.init = function () {
-      gapi.load('auth2', function () {
-        auth2 = gapi.auth2.init({
-          client_id: CLIENT_ID,
-          fetch_basic_profile: true,
-          scope: 'profile'
-        });
-
-        // Listen for sign-in state changes.
-        // auth2.isSignedIn.listen(signinChanged);
-
-        // Listen for changes to current user.
-        // auth2.currentUser.listen(userChanged);
-
-        // Sign in the user if they are currently signed in.
-
-        auth2.then(function () {
-          $rootScope.showSignin = true;
-          $rootScope.$digest();
-          gapi.signin2.render('signin2-button', {
-            'scope': 'profile',
-            'width': 220,
-            'height': 50,
-            'longtitle': true,
-            'theme': 'dark',
-            'onSuccess': signinSuccess,
-            'onFailure': signinFailure
-          });
-        });
-      });
+      window.signinSuccess() 
     };
 
 
@@ -1698,11 +1672,11 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
 
 
     window.signinSuccess = function () {
-      var user = gapi.auth2.getAuthInstance().currentUser.get();
-      $rootScope.userEmail = user.getBasicProfile().getEmail().toLowerCase();
-      if ($rootScope.loading) {
-        return;
-      }
+      //var user = gapi.auth2.getAuthInstance().currentUser.get();
+      $rootScope.userEmail = window.survey_user_email;
+      //if ($rootScope.loading) {
+      //  return;
+      //}
       $rootScope.showSignin = false;
       $rootScope.loading = "Loading Survey...";
       $rootScope.status = {
@@ -1716,12 +1690,7 @@ angular.module('W3FWIS', ['GoogleSpreadsheets', 'GoogleDrive', 'W3FSurveyLoader'
     }
 
     function safeInit() {
-      if (typeof (gapi) == 'undefined') {
-        console.log('checking again for gapi in 1s')
-        setTimeout(safeInit, 1000)
-      } else {
-        window.init()
-      }
+      setTimeout(window.init, 500)
     }
     safeInit()
   }]);

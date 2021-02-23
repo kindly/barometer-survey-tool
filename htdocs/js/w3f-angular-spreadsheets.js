@@ -19,8 +19,10 @@
 angular.module("GoogleSpreadsheets", []).factory("spreadsheets", [
   "$http",
   "$q",
-  function ($http, $q) {
+  "$cookies",
+  function ($http, $q, $cookies) {
     var service = this
+
 
     var getText = function (entry, field) {
       var elements = entry.getElementsByTagName(field)
@@ -75,52 +77,21 @@ angular.module("GoogleSpreadsheets", []).factory("spreadsheets", [
     }
 
     function getSheets(key) {
-      var url =
-        "https://spreadsheets.google.com/feeds/worksheets/" +
-        key +
-        "/private/full"
-
       var deferred = defer()
+
+      var url = '/api/survey/'+ key + '/data/'
+
+      if (key == 'questions') {
+        url = '/api/question-data/'
+      }
 
       $http({
         method: "GET",
-        url: "/google-spreadsheets.php?action=retreive&url=" + url,
+        url: url,
         timeout: deferred,
       })
         .then(function (response) {
-          var xml = new DOMParser().parseFromString(response.data, "text/xml")
-          var sheets = {}
-
-          angular.forEach(xml.getElementsByTagName("entry"), function (entry) {
-            var title = getText(entry, "title")
-            var id = getText(entry, "id")
-
-            if (typeof id == "string") {
-              id = id.match(/([^\/]+)$/)[1]
-            }
-
-            var sheet = {
-              key: key,
-              id: id,
-              rowCount: parseInt(getText(entry, "rowCount")),
-              colCount: parseInt(getText(entry, "colCount")),
-            }
-
-            var links = entry.getElementsByTagName("link")
-
-            // Prefix meta data with :, save links and row id
-            sheet[":links"] = {}
-
-            angular.forEach(links, function (link) {
-              sheet[":links"][link.getAttribute("rel")] = link.getAttribute(
-                "href"
-              )
-            })
-
-            sheets[title] = sheet
-          })
-
-          deferred.resolve(sheets)
+          deferred.resolve(response.data)
         })
         .then(function (error) {
           deferred.reject("Unable to access answer data.")
@@ -129,80 +100,39 @@ angular.module("GoogleSpreadsheets", []).factory("spreadsheets", [
       return deferred.promise
     }
 
-    function getRows(key, sheet, useKey) {
-      var url =
-        "https://spreadsheets.google.com/feeds/list/" +
-        key +
-        "/" +
-        sheet.id +
-        "/private/full"
+    function getRows(sheet, useKey) {
+      var rows = useKey ? {} : []
 
-      var deferred = defer()
-
-      $http({
-        method: "GET",
-        url: "/google-spreadsheets.php?action=retreive&url=" + url,
-        timeout: deferred,
+      angular.forEach(sheet.data, function (row) {
+        if (useKey) {
+          rows[row[useKey]] = row
+        } else {
+          rows.push(row)
+        }
       })
-        .then(function (response) {
-          var xml = new DOMParser().parseFromString(response.data, "text/xml")
-          var entries = xml.getElementsByTagName("entry")
-          var rows = useKey ? {} : []
-
-          angular.forEach(entries, function (entry) {
-            var row = mungeEntry(entry)
-
-            if (useKey) {
-              if (key) {
-                rows[row[useKey]] = row
-              } else {
-                if (!rows[""]) {
-                  rows[""] = []
-                }
-
-                rows[""].push(row)
-              }
-            } else {
-              rows.push(row)
-            }
-          })
-
-          deferred.resolve(rows)
-        })
-        .then(function (error) {
-          deferred.reject(error)
-        })
-
-      return deferred.promise
+      return rows
     }
 
     function updateRow(url, values) {
       var deferred = defer()
-      var parseResponse = function (data) {
-        var xml = new DOMParser().parseFromString(data, "text/xml")
-        var entries = xml.getElementsByTagName("entry")
-
-        return mungeEntry(entries[0])
-      }
 
       $http({
-        method: "POST",
-        url:
-          "/google-spreadsheets.php?action=submit&url=" + url + "&method=PUT",
+        method: "PUT",
+        url: url,
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded",
+          'X-CSRFToken': $cookies.csrftoken,
         },
         timeout: deferred,
-        data: $.param(values),
+        data: values,
       })
         .then(function (response) {
-          deferred.resolve(parseResponse(response.data))
+          deferred.resolve(response.data)
         })
         .then(function (error) {
           // Don't necessarily call 409 status an error: maybe nothing was going to change
           // anyway
           if (status == 409) {
-            deferred.resolve(parseResponse(error))
+            deferred.resolve(error)
           }
 
           deferred.reject(error)
